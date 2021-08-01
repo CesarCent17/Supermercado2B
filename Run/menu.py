@@ -51,7 +51,7 @@ class Core:
         cedula = input("Cedula: ")
         edad = self.ent.Int("Edad: ")
         direccion = input("Direccion: ")
-        self.registrous = self.arch.getDatos("Usuarios.txt")
+        self.registrous = self.arch.getDatos("Usuario.txt")
         obj = self.veri.Verificar(cedula, self.registrous)
         #Si cedula existe retorna OBJ, SI USUARIO EXISTE
         #si no existe retorna NONE, SI USUARIO NO EXISTE
@@ -64,15 +64,15 @@ class Core:
             msg = self.user.nombre + ";" + self.user.apellido\
             + ";" + self.user.cedula + ";" + str(self.user.edad) + ";" + self.user.direccion + ";\n"
 
-            self.arch.crear("Usuarios.txt", msg, "a")
+            self.arch.crear("Usuario.txt", msg, "a")
             #a es add, w es write,a es sobreescritura, r es read leer
 
             print("\t\t Cuenta creada con exito! \n\n")
 
 
         elif obj == None and len(cedula) != 10:
-            print("La cedula tiene 10 digitos, por favor vuelta a intentarlo")
-            #self.registro()
+            print("La cedula ingresada debe tener 10 digitos\n\n")
+            self.registro()
 
         elif obj != None:
             print("\t\tUsted ya esta afiliado \n\n")
@@ -93,6 +93,8 @@ class Core:
     #Funcion afiliado, contiene menuafiliado
     def afiliado(self):
         cedula = input("Ingrese su cedula: ")
+        print("\n")
+        self.registrous = self.arch.getDatos("Usuario.txt")
         obj = self.veri.Verificar(cedula, self.registrous)
         if obj != None:
             self.menuafiliado(obj, cedula)#nos quedamos aqui
@@ -101,57 +103,6 @@ class Core:
             print("Usted no esta afiliado")
             input("<Enter para continuar>")
             self.main()
-            #ERROR
-
-
-    #Imprime los datos generales de la cuenta
-    def cuentaexiste(self, usuario):
-        print("\t\tConsulta Datos Generales")
-        datos = print(f"\n Nombre: {usuario.nombre}\n Apellido: {usuario.apellido}\
-        \n Cedula: {usuario.cedula}\n Edad: {usuario.edad}\n Direccion: {usuario.direccion}\n")
-        return datos
-
-    #Editar los datos generales de la cuenta
-    def editar(self, usuario):
-        nombre = input("Nombre: ")
-        apellido = input("Apellido: ")
-        cedula = input("Cedula: ")
-        edad = self.ent.Int("Edad: ")
-        direccion = input("Direccion: ")
-        usuario.nombre = nombre
-        usuario.apellido = apellido
-        usuario.cedula = cedula
-        usuario.edad = edad
-        usuario.direccion = direccion
-        print("\n")
-        print("\t\tDatos actualizados correctamente")
-        print(usuario.getDatos())
-        print("\n")
-
-    #Elimina la cuenta
-    def eliminar(self, cedula, lista, obj):
-        indice = self.veri.getPosicion(cedula, lista)
-        confirma = input("Estas seguro S/N: ")
-
-        #Opciones de eliminar
-        if confirma == "S" or confirma == "s": #elimina la cuenta
-            print("Elimando cuenta...")
-            print("Cuenta eliminada con exito\n")
-            self.registrous.pop(indice)
-            self.main()
-
-
-
-        elif confirma == "N" or confirma == "n": #se vuelve a configuracion
-            print("Volver")
-            print("\n")
-            self.menusetting(obj, cedula)
-
-        else:
-            print("El caracter no es correcto")
-            print("\n")
-            self.menusetting(obj, cedula)
-
 
     #Menu afiliado, contiene cuentaexiste y menu de configuracion
     def menuafiliado(self,obj,cedula):
@@ -167,7 +118,7 @@ class Core:
             self.main()
 
         elif opc == 2: #Opcion 2
-            self.menusetting(obj,cedula)  #nos quedamos aqui
+            self.menusetting(obj,cedula)
 
 
 
@@ -177,11 +128,11 @@ class Core:
 
 
 
-
     #Menu de configuracion
     def menusetting(self,obj,cedula):
         print("\n")
         print("\t\t Configuracion")
+        #self.registrous = self.arch.getDatos("Usuarios.txt")
 
         #Imprimo el menu
         listamenu = ("Editar", "Eliminar", "Volver")
@@ -204,16 +155,91 @@ class Core:
             print("\n")
             self.menuafiliado(obj, cedula)
 
+    #Editar los datos generales de la cuenta
+    #OJOOOOOOOOOOOOOOOOOOOOOOOO REVISAR BUCLE
+    def editar(self, user):
+        nombre = input("Nombre: ")
+        apellido = input("Apellido: ")
+        cedula = input("Cedula: ")
+        edad = self.ent.Int("Edad: ")
+        direccion = input("Direccion: ")
+        if len(cedula)==10:
+            user.nombre = nombre
+            user.apellido = apellido
+            user.cedula = cedula
+            user.edad = edad
+            user.direccion = direccion
+            msg = ""
+            for i in range(len(self.registrous)):
+                msg = msg + self.registrous[i].nombre + ";"\
+                +self.registrous[i].apellido +";"+self.registrous[i].cedula+";"\
+                +str(self.registrous[i].edad)+";"+self.registrous[i].direccion+";\n"
+
+            self.arch.crear("Usuario.txt", msg, "w")
+            print("\n")
+            print("\t\tDatos actualizados correctamente")
+            print(user.getDatos())
+            print("\n")
+
+        elif len(cedula) != 10:
+            print("La cedula ingresada debe tener 10 digitos\n\n")
+            self.editar(user) #prueba
+
+
+
+
+
+
+
+    #Imprime los datos generales de la cuenta
+    def cuentaexiste(self, usuario):
+        print("\t\tConsulta Datos Generales")
+        datos = print(f"\n Nombre: {usuario.nombre}\n Apellido: {usuario.apellido}\
+        \n Cedula: {usuario.cedula}\n Edad: {usuario.edad}\n Direccion: {usuario.direccion}\n\n")
+        return datos
+
+
+
+    #Elimina la cuenta
+    def eliminar(self, cedula, lista, obj):
+        #self.registrous = self.arch.getDatos("Usuario.txt")
+        indice = self.veri.getPosicion(cedula, lista)
+        confirma = input("Estas seguro S/N: ")
+
+        #Opciones de eliminar
+        if confirma == "S" or confirma == "s": #elimina la cuenta
+            print("Elimando cuenta...")
+            self.registrous.pop(indice)
+            msg = ""
+            for i in range(len(self.registrous)):
+                msg = msg + self.registrous[i].nombre + ";" \
+                      + self.registrous[i].apellido + ";" + self.registrous[i].cedula + ";" \
+                      + str(self.registrous[i].edad) + ";" + self.registrous[i].direccion + ";\n"
+
+            self.arch.crear("Usuario.txt", msg, "w")
+            print("Cuenta eliminada con exito\n")
+            self.main()
+
+
+
+        elif confirma == "N" or confirma == "n": #se vuelve a configuracion
+            print("Volver")
+            print("\n")
+            self.menusetting(obj, cedula)
+
+        else:
+            print("El caracter no es correcto")
+            print("\n")
+            self.menusetting(obj, cedula)
 
 
     #Muestra los usuarios
     def listar(self):
         print("\t\t Lista de afiliados")
+        self.registrous = self.arch.getDatos("Usuario.txt")
         for indice in range(len(self.registrous)):
             print(self.registrous[indice].getDatos())
         print("\n")
-
-
 
 
 

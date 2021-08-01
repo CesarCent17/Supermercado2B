@@ -12,7 +12,7 @@ class Archivo:
     def getDatos(self, nombre):
         registrous = []
         archivo = open(nombre, "r")
-        for linea in archivo.readline(): #por cada linea haz
+        for linea in archivo.readlines(): #por cada linea haz
             tupla = linea.split(";") #crea una tupla y separa los campos de la linea cuando veas ;
 
             obj = Usuario(tupla[0], tupla[1], tupla[2], int(tupla[3]), tupla[4])
