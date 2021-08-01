@@ -107,6 +107,8 @@ class Core:
     #Menu afiliado, contiene cuentaexiste y menu de configuracion
     def menuafiliado(self,obj,cedula):
         print("\t\t Menu de afiliado")
+        print("Bienvenido usuario: " + obj.nombre +" "+ obj.apellido+"\n")
+
         listamenu = ("Consultas", "Configuracion", "Volver")
 
         #Opciones de menu de afiliado
